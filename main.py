@@ -40,23 +40,35 @@ class HashMaker:
     def get_hashsum(self, file_name):
         self.file_name = file_name
 
-        if os.path.isfile('hashsum.txt') == True:
-            os.remove('hashsum.txt')
-        else:
-            pass
         with open(file_name) as f:
             for line in f:
                 hash = hashlib.md5(line.encode())
                 res = hash.hexdigest()
-                with open('hashsum.txt', 'a') as f:
-                    f.write(f'{res}, \n')
+                yield res
 
-    def main(self):
-       self.get_hashsum(self.create_file_links(self.get_data(self.download_file(link))))
+
+    def main(self, file_name):
+        hashsum = self.get_hashsum(self.create_file_links(self.get_data(self.download_file(link))))
+
+        if os.path.isfile('hashsum.txt') == True:
+            os.remove('hashsum.txt')
+        else:
+            pass
+
+        with open(file_name) as f:
+            lines = f.readlines()
+
+        for line in lines:
+
+            while line != lines[-1]:
+                with open('hashsum.txt', 'a') as f:
+                    f.write(f'{next(hashsum)}, \n')
+            else:
+                raise StopIteration
 
 hashmaker1 = HashMaker(link)
 
-hashmaker1.main()
+hashmaker1.main('links.txt')
 
 
 
