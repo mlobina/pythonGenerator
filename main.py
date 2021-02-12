@@ -59,12 +59,14 @@ class HashMaker:
             lines = f.readlines()
 
         for line in lines:
+            try:
+                while line != lines[-1]:
+                    with open('hashsum.txt', 'a') as f:
+                        f.write(f'{next(hashsum)}, \n')
+            except Exception:
+                pass
+            StopIteration
 
-            while line != lines[-1]:
-                with open('hashsum.txt', 'a') as f:
-                    f.write(f'{next(hashsum)}, \n')
-            else:
-                raise StopIteration
 
 hashmaker1 = HashMaker(link)
 
